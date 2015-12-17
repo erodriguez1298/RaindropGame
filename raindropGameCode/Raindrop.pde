@@ -10,7 +10,7 @@ class Raindrop {
     vel = new PVector (0, 5);
     acc = new PVector(0, 2);
     sushi = loadImage("sushi.png");
-    sushi.resize(90,90);
+    sushi.resize(90, 90);
   }
 
   void display() {
@@ -26,10 +26,13 @@ class Raindrop {
     vel.limit(15);
   }
 
-  boolean isInContactWith(PVector mouse) {
-    if (loc.dist(mouse) <= 60) {
+  boolean isInContactWith(PVector mouth) {
+    if (loc.dist(mouth) <= 60) {
+      println("caught it in frame " + frameCount);
       return true;
-    } else return false;
+    } else { 
+      return false;
+    }
   }
   void reset() {
     loc = new PVector(random(90, width-90), 0);
