@@ -1,7 +1,9 @@
 PVector mouth;   //declare a P
-Raindrop r;      //declare a new Raindrop called r
 Bucket b;
 float game; 
+String[] responses = {"YUM", "MMM", "OH YEAH", "SO GOOD"};
+int timer;
+ArrayList<Raindrop> particles = new ArrayList<Raindrop>();
 
 // On your own, create an array of Raindrop objects instead of just one
 // Use the array instead of the single object
@@ -11,13 +13,16 @@ float game;
 void setup() {
   size(800, 600);
   mouth = new PVector();                //initialize mouse PVector. value is irrelevant since it will be set at the start of void draw(){}
-  r = new Raindrop(random(width), 0);   //Initialize r. The parameters used are the initial x and y positions
+ //Initialize r. The parameters used are the initial x and y positions
   b = new Bucket(mouseX, height-375);
   game = 0;
+  particles.add(new Raindrop(mouseX, mouseY));
 }
 
 void draw() {
   background(0);
+  particles.add(new Raindrop(mouseX, mouseY));
+
   if(game == 0){
     textSize(75);
     textAlign(CENTER, CENTER);
@@ -28,17 +33,31 @@ void draw() {
     String s = "Emily is hangry. Feed her sushi to make her happy!";
     text(s, width/7, height/6, 3*width/4, 3*height/4);
   }
+  
   if(game == 1){
     mouth.set(mouseX, height-130);             //set value of mouse as mouseX,mouseY
     b.display();
-    r.fall();         //make the raindrop fall. It should accelerate as if pulled towards the ground by earth's gravity
-    r.display();      //display the raindrop
-    if (r.isInContactWith(mouth)) {      //check to see if the raindrop is in contact with the point represented by the PVector called mouse
-      r.reset();                         //if it is, reset the raindrop
+
+    for (int i = particles.size()-1; i >= 0; i--) {  //go through the ArrayList backwards to prevent flickering
+      //particles.get(0)   will get the particle at index 0 from the ArrayList
+      //to use this Particle, we have to store it in another Particle object
+      Raindrop r = particles.get(i);    //get the Particle in location i and store it in Particle p
+     
+      r.fall();         //make the raindrop fall. It should accelerate as if pulled towards the ground by earth's gravity
+      r.display();      //display the raindrop
+      
+      if (r.isInContactWith(mouth)) {      //check to see if the raindrop is in contact with the point represented by the PVector called mouse
+        r.reset();         //if it is, reset the raindrop
+        timer = frameCount;
     }
-    if (r.loc.y > height + 45) {     //check to see if the raindrop goes below the bottom of the screen
-      r.reset();                           //if it does, reset the raindrop
+    
+      if (r.loc.y > height + 45) {     //check to see if the raindrop goes below the bottom of the screen
+        r.reset();                           //if it does, reset the raindrop
     }
+  }
+
+    if(frameCount < timer +50)
+    reaction();
   }
 }
 
@@ -46,4 +65,11 @@ void mousePressed(){
   if(game == 0){
     game = 1;
   }
+}
+
+void reaction(){
+  fill(255,160,122);
+  textAlign(CENTER, CENTER);
+  textSize(50);
+  text(responses[int(random(4))], width/2, 200);
 }
