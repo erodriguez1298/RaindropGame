@@ -4,6 +4,7 @@ float game;
 String[] responses = {"YUM", "MMM", "OH YEAH", "SO GOOD"};
 int timer;
 ArrayList<Raindrop> particles = new ArrayList<Raindrop>();
+int interval;
 
 // On your own, create an array of Raindrop objects instead of just one
 // Use the array instead of the single object
@@ -16,12 +17,13 @@ void setup() {
  //Initialize r. The parameters used are the initial x and y positions
   b = new Bucket(mouseX, height-375);
   game = 0;
-  particles.add(new Raindrop(mouseX, mouseY));
+  for(int i = 0; i < 1; i++){
+    particles.add(new Raindrop(random(width), -random(height)));
+  }
 }
 
 void draw() {
   background(0);
-  particles.add(new Raindrop(mouseX, mouseY));
 
   if(game == 0){
     textSize(75);
@@ -60,6 +62,7 @@ void draw() {
     reaction();
   }
 }
+
 
 void mousePressed(){
   if(game == 0){
