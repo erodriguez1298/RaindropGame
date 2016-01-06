@@ -9,13 +9,12 @@ int loss;
 PImage happy;
 PImage sad;
 
-
-
-
 void setup() {
   size(800, 600);
   mouth = new PVector();                //declaring values
   b = new Bucket(mouseX, height-375);
+  happy = loadImage("emilyhappy.png");
+  sad = loadImage("emilysad.png");
   
   for (int i = 0; i < 2; i++) {                                    //add sushi
     particles.add(new Raindrop(random(width), -random(height)));
@@ -41,7 +40,7 @@ void draw() {
     b.display();
     text("Yum level = " + score, width/4, 100);    //Score board
 
-    for (int i = particles.size()-1; i >= 0; i--) {  \//using array of sushi particles
+    for (int i = particles.size()-1; i >= 0; i--) {  //using array of sushi particles
       Raindrop r = particles.get(i);    //get the Particle in location i and store it in Particle p
 
       r.fall();         //make the sushi fall. It should accelerate as if pulled towards the ground by earth's gravity
@@ -60,7 +59,7 @@ void draw() {
     }
   }
 
-    if (score>=30) {    //win the game when you get 30 points
+    if (score>=20) {    //win the game when you get 30 points
       game=2;
       score = 0;
       loss=0;
