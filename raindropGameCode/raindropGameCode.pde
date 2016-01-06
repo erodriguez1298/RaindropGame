@@ -1,23 +1,23 @@
-PVector mouth;   //declare a P
+PVector mouth;   //declaring variables
 Bucket b;
 float game; 
-String[] responses = {"YUM", "MMM", "OH YEAH", "SO GOOD"};
 int timer;
 ArrayList<Raindrop> particles = new ArrayList<Raindrop>();
 int interval;
+int score;
+int loss;
+PImage happy;
+PImage sad;
 
-// On your own, create an array of Raindrop objects instead of just one
-// Use the array instead of the single object
-// You can start out by just using the single Raindrop as you test
+
 
 
 void setup() {
   size(800, 600);
-  mouth = new PVector();                //initialize mouse PVector. value is irrelevant since it will be set at the start of void draw(){}
- //Initialize r. The parameters used are the initial x and y positions
+  mouth = new PVector();                //declaring values
   b = new Bucket(mouseX, height-375);
-  game = 0;
-  for(int i = 0; i < 1; i++){
+  
+  for (int i = 0; i < 2; i++) {                                    //add sushi
     particles.add(new Raindrop(random(width), -random(height)));
   }
 }
@@ -25,54 +25,90 @@ void setup() {
 void draw() {
   background(0);
 
-  if(game == 0){
+  if (game == 0) {        //start screen
     textSize(75);
     textAlign(CENTER, CENTER);
-    fill(205,92,92);
+    fill(205, 92, 92);
     text("Hangry Emily", width/2, height/4);
-    fill(188,143,143);
+    fill(188, 143, 143);
     textSize(50);
-    String s = "Emily is hangry. Feed her sushi to make her happy!";
+    String s = "Feed Emily sushi to make her happy! (Click to begin)";
     text(s, width/7, height/6, 3*width/4, 3*height/4);
   }
-  
-  if(game == 1){
-    mouth.set(mouseX, height-130);             //set value of mouse as mouseX,mouseY
-    b.display();
 
-    for (int i = particles.size()-1; i >= 0; i--) {  //go through the ArrayList backwards to prevent flickering
-      //particles.get(0)   will get the particle at index 0 from the ArrayList
-      //to use this Particle, we have to store it in another Particle object
+  if (game == 1) {
+    mouth.set(mouseX, height-130);             //setting mouth position 
+    b.display();
+    text("Yum level = " + score, width/4, 100);    //Score board
+
+    for (int i = particles.size()-1; i >= 0; i--) {  \//using array of sushi particles
       Raindrop r = particles.get(i);    //get the Particle in location i and store it in Particle p
-     
-      r.fall();         //make the raindrop fall. It should accelerate as if pulled towards the ground by earth's gravity
-      r.display();      //display the raindrop
-      
-      if (r.isInContactWith(mouth)) {      //check to see if the raindrop is in contact with the point represented by the PVector called mouse
-        r.reset();         //if it is, reset the raindrop
+
+      r.fall();         //make the sushi fall. It should accelerate as if pulled towards the ground by earth's gravity
+      r.display();      //display the sushi
+
+      if (r.isInContactWith(mouth)) {      //check to see if the sushi is in contact with the point represented by the PVector called mouse
+        r.reset();         //if it is, reset the sushi
         timer = frameCount;
-    }
-    
+        score+=1;
+      }
+
       if (r.loc.y > height + 45) {     //check to see if the raindrop goes below the bottom of the screen
-        r.reset();                           //if it does, reset the raindrop
+        r.reset();              //if it does, reset the raindrop
+        loss += 1;
+      }
     }
   }
 
-    if(frameCount < timer +50)
-    reaction();
+    if (score>=30) {    //win the game when you get 30 points
+      game=2;
+      score = 0;
+      loss=0;
+    }
+
+    if (loss>=20) {      //lose the game when you drop 20 sushi
+      game =3;
+      score = 0;
+      loss=0;
+    }
+
+    if (game ==2) {
+      win();
+    }
+
+    if (game == 3) {
+      failure();
+    }
+    
+    if (frameCount < timer +20){  //"Yum!" appears for 20 frames (and also at the beginning as a joke)
+      reaction();
   }
 }
 
 
-void mousePressed(){
-  if(game == 0){
+void mousePressed() {
+  if (game == 0|| game == 2 || game==3) {          //click to restart/start
     game = 1;
   }
 }
 
-void reaction(){
-  fill(255,160,122);
+void win(){
+      image(happy, 200, 200);      //winning page
+      fill(205, 92, 92);
+      textSize(40);
+      text("Yay! Click to start over", 400, 150);
+}
+
+void failure() {                  //losing page
+  image(sad, 200, 30);
+    fill(188, 143, 143);
+  textSize(40);
+  text("You failed Emily. Click to try again", 400, 560);
+}
+
+void reaction() {    //"Yum!"
+  fill(255, 160, 122);
   textAlign(CENTER, CENTER);
   textSize(50);
-  text(responses[int(random(4))], width/2, 200);
+  text("YUM", width/2, 200);
 }
